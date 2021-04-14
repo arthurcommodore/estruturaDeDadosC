@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdbool.h>
 
 #define TAM 10
 
@@ -32,14 +33,44 @@ void enqueue() {
 
 }
 
+void sort() {
+    bool naoVazio = false;
+    for(int i = 0; i < TAM; i++) {
+        if(fila[i] > 0)
+            naoVazio = true;
+    }
+
+    if(naoVazio) {
+        while(fila[0] == 0) {
+            for(int i = 0; i < TAM; i++) {
+                if(fila[i] == 0 && fila[i + 1] != 0 && (i + 1) < TAM) {
+                    fila[i] = fila[i + 1];
+                    fila[i + 1] = 0; 
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i < TAM; i++) {
+        if(fila[i] == 0) {
+            head = i - 1;
+            tail = i;
+            break;
+        }
+
+    }
+}
+
 void dequeue() {
     if(head < tail) {
         fila[head] = 0;
         head += 1; 
+        sort();
     }else
         puts("A fila está vazia");
 
 }
+
 
 void clear() {
     head = 0;
