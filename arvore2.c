@@ -23,9 +23,10 @@ void insertDireita(No *no, int valor) {
         novo->nd = NULL;
         no->nd = novo;
     }else {
-        if(valor > no->nd->data) {
+        if(valor > no->nd->data) 
             insertDireita(no->nd, valor);
-        }else 
+        
+        if(valor < no->nd->data) 
             insertEsquerda(no->nd, valor);
     }
 }
@@ -40,7 +41,8 @@ void insertEsquerda(No *no, int valor) {
     }else {
         if(valor < no->ne->data)
             insertEsquerda(no->ne, valor);
-        else 
+
+        if(valor > no->ne->data)
             insertDireita(no->nd, valor);
     }
 
@@ -57,7 +59,8 @@ void insert(ArvB *arv, int valor) {
    }else {
         if(valor < arv->raiz->data)        
             insertEsquerda(arv->raiz, valor);
-        else 
+
+        if(valor > arv->raiz->data)        
             insertDireita(arv->raiz, valor);
    } 
 }
