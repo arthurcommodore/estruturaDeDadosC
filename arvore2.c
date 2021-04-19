@@ -64,8 +64,8 @@ void insert(ArvB *arv, int valor) {
 
 void imprimir(No *raiz) {
     if(raiz != NULL) {
-        printf("%d\n", raiz->data);
         imprimir(raiz->ne);
+        printf("%d\n", raiz->data);
         imprimir(raiz->nd);
     }
 }
