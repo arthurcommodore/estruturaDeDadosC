@@ -12,56 +12,21 @@ typedef struct {
 }ArvB;
 
 
-void insertEsquerda(No*, int);
-void insertDireita(No*, int);
-
-void insertDireita(No *no, int valor) {
-    if(no->nd == NULL) {
+No* insert(No *raiz, int valor) {
+   if(raiz == NULL) {
         No *novo = (No*) malloc(sizeof(No));
         novo->data = valor;
         novo->ne = NULL;
         novo->nd = NULL;
-        no->nd = novo;
-    }else {
-        if(valor > no->nd->data) 
-            insertDireita(no->nd, valor);
-        
-        if(valor < no->nd->data) 
-            insertEsquerda(no->nd, valor);
-    }
-}
-
-void insertEsquerda(No *no, int valor) {
-    if(no->ne == NULL) {
-        No *novo = (No*) malloc(sizeof(No));
-        novo->data = valor;
-        novo->ne = NULL;
-        novo->nd = NULL;
-        no->ne = novo;
-    }else {
-        if(valor < no->ne->data)
-            insertEsquerda(no->ne, valor);
-
-        if(valor > no->ne->data)
-            insertDireita(no->nd, valor);
-    }
-
-}
-
-
-void insert(ArvB *arv, int valor) {
-   if(arv->raiz == NULL) {
-        No *novo = (No*) malloc(sizeof(No));
-        novo->data = valor;
-        novo->ne = NULL;
-        novo->nd = NULL;
-        arv->raiz = novo;
+        return novo; 
    }else {
-        if(valor < arv->raiz->data)        
-            insertEsquerda(arv->raiz, valor);
+        if(valor < raiz->data)        
+           raiz->ne = insert(raiz->ne, valor); 
 
-        if(valor > arv->raiz->data)        
-            insertDireita(arv->raiz, valor);
+        if(valor > raiz->data)        
+           raiz->nd = insert(raiz->nd, valor); 
+
+    return raiz;
    } 
 }
 
@@ -73,13 +38,61 @@ void imprimir(No *raiz) {
     }
 }
 
+int size(No* raiz) {
+    if(raiz == NULL)
+        return 0;
+    else 
+        return 1 + size(raiz->ne) + size(raiz->nd);
+}
+
+int search(No* raiz, int chave) {
+    if(raiz == NULL)
+        return -1;
+    else if(raiz->data == chave)
+        return raiz->data;
+    else if(chave < raiz->data)
+        return search(raiz->ne, chave);
+    else
+        return search(raiz->nd, chave);
+
+}
+
+No* removeArvore(No *raiz, int chave) {
+    if(raiz == NULL) {
+        puts("Raiz nao encontrada");
+        return NULL;
+    }else if(raiz->data == chave) {
+        if(raiz->ne == NULL && raiz->nd == NULL) {
+            free(raiz);
+            return NULL;
+        }else if(raiz->ne != NULL || raiz->nd != NULL) {
+            No* aux;
+            if(raiz->ne != NULL) 
+                aux = raiz->ne;
+            else
+                aux = raiz->nd;
+            
+            free(raiz);
+            return aux;
+        }
+
+    }else if(chave < raiz->data) {
+        raiz->ne = removeArvore(raiz->ne, chave);
+
+    }else if(chave > raiz->data) {
+        raiz->nd = removeArvore(raiz->nd, chave);
+
+    }
+    return raiz;
+}
+
 int main() {
     int option, valor;
     ArvB arv;
     arv.raiz = NULL;
 
     do {
-        puts("\n0- sair\n1- inserir\n2- imprimir\n");
+        puts("\n0- sair\n1- inserir\n2- imprimir\n3- buscar\n");
         scanf("%d", &option);
 
         switch(option) {
@@ -90,12 +103,27 @@ int main() {
             case 1:
                 puts("Digite um numero");
                 scanf("%d", &valor);
-                insert(&arv, valor);
+                arv.raiz = insert(arv.raiz, valor);
                 break;
 
             case 2:
                 puts("Impressao da arvore binaria");
                 imprimir(arv.raiz);
+                printf("Tamanho: %d\n", size(arv.raiz));
+                break;
+            
+            case 3:
+                puts("Digite o número que deseja buscar");
+                scanf("%d", &valor);
+                printf("Resultado da busca %d\n", search(arv.raiz, valor));
+                break;
+            
+            case 4:
+                puts("Digite um numero");
+                scanf("%d", &valor);
+                arv.raiz = removeArvore(arv.raiz, valor);
+                break;
+
         }
     }while(option != 0);
 }
